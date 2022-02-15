@@ -63,7 +63,8 @@ def make_edit_username_requests(target, bio, email, session_id, csrftoken):
         )
         if "{\"status\":\"ok\"}" in response and not claimed:
             claimed = True
-            send_to_discord_webhook(username=target)
+            if len(WEBHOOK_URL) != 0:
+                send_to_discord_webhook(username=target)
             if platform.system() == "Windows":
                 ctypes.windll.user32.MessageBoxW(0, f"Claimed @{target} with /edit.", ";3#0001", 0)
             else:
