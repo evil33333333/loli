@@ -1,0 +1,16 @@
+If you have issues with pycurl, make sure you have Python 3.8 before you install.
+
+Also, I written this script so people can read it and try to learn from it.
+
+Other open source/private source Instagram turbos consist of the following:
+ -> Poor variable and/or function names
+ -> "Over-importing"
+ -> 0 consideration for other operating systems
+ -> Spaghetti code
+ -> Horrible threading implementations
+ -> Horrific and unnecessary if/else blocks 
+ -> etc, etc...
+ 
+ I hope this fixes those issues,
+ 
+ Eve X
