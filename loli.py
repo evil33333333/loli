@@ -66,14 +66,17 @@ def make_edit_username_requests(target, bio, email, session_id, csrftoken):
             if len(WEBHOOK_URL) != 0:
                 send_to_discord_webhook(username=target)
             if platform.system() == "Windows":
-                ctypes.windll.user32.MessageBoxW(0, f"Claimed @{target} with /edit.", ";3#0001", 0)
+                ctypes.windll.user32.MessageBoxW(0, f"Loli claimed @{target} with /edit.", ";3#0001", 0)
             else:
                 print(f"Loli claimed @{target} with /edit.")
             time.sleep(5)
             exit()
         elif "spam" in response and not rate_limited:
             rate_limited = True
-            ctypes.windll.user32.MessageBoxW(0, f"RL.", ";3#0001", 0)
+            if platform.system() == "Windows":
+                ctypes.windll.user32.MessageBoxW(0, f"Rate limited.", ";3#0001", 0)
+            else:
+                print('Rate limited.')    
             time.sleep(5)
             exit()
         else:
