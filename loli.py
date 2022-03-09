@@ -31,7 +31,7 @@ claimed = False
 rate_limited = False
 
 
-def http_request(url, headers, data=None):
+def http_request(url: str, headers, data=None) -> Text:
     curl = pycurl.Curl()
     curl.setopt(pycurl.URL, url)
     curl.setopt(pycurl.HTTPHEADER, headers)
@@ -47,13 +47,13 @@ def http_request(url, headers, data=None):
     return response
 
 
-def send_to_discord_webhook(username):
+def send_to_discord_webhook(username: str) -> None:
     WEBHOOK_JSON = {"embeds": [{"title": f"claimed insta @{username}","description": "#loli #loli_gang","url": f"https://instagram.com/{username}","color": 12202176,"footer": {"text": "Developed by ;3#0001"},"thumbnail": {"url": "https://data.whicdn.com/images/192849418/original.jpg"}}]}
     WEBHOOK_HEADERS = {'content-type', 'application/json'}
     requests.post(url=WEBHOOK_URL, headers=WEBHOOK_HEADERS, json=WEBHOOK_JSON)
 
 
-def make_edit_username_requests(target, bio, email, session_id, csrftoken):
+def make_edit_username_requests(target: str, bio: str, email: str, session_id: str, csrftoken: str) -> None:
     global attempts, claimed, rate_limited
     while not claimed and not rate_limited:
         response = http_request(
@@ -72,6 +72,13 @@ def make_edit_username_requests(target, bio, email, session_id, csrftoken):
             time.sleep(5)
             exit()
         elif "spam" in response and not rate_limited:
+        "user-agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36',
+        'x-csrftoken': csrftoken, 
+        'cookie': f'sessionid={session_id}'
+    }
+    return str(requests.get("https://instagram.com/accounts/edit/?__a=1", headers=headers).json()['form_data']['email'])
+
+
             rate_limited = True
             if platform.system() == "Windows":
                 ctypes.windll.user32.MessageBoxW(0, f"Rate limited.", ";3#0001", 0)
@@ -84,23 +91,16 @@ def make_edit_username_requests(target, bio, email, session_id, csrftoken):
             print(f"{Fore.GREEN}Response: {Fore.WHITE}{response}{Fore.GREEN} || Attempts: {Fore.WHITE}{attempts}{Fore.GREEN}", end='\r')
 
 
-def get_email_from_account(session_id, csrftoken):
     headers = {
-        "user-agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36',
-        'x-csrftoken': csrftoken, 
-        'cookie': f'sessionid={session_id}'
-    }
-    return str(requests.get("https://instagram.com/accounts/edit/?__a=1", headers=headers).json()['form_data']['email'])
-
-
-def generate_random_email_address():
+def get_email_from_account(session_id, csrftoken) -> str:
+def generate_random_email_address() -> str:
     random_email = ''
     for _ in range(12): 
         random_email += random.choice(CHARACTERS)
     return random_email + '@gmail.com'
 
 
-def allocate_threads(target, bio, email, session_id, csrftoken, thread_count):
+def allocate_threads(target: str, bio: str, email: str, session_id: str, csrftoken: str, thread_count: int) -> None:
     threads = []
     for i in range(thread_count):
         t = threading.Thread(target=make_edit_username_requests, args=[target, bio, email, session_id, csrftoken])
@@ -112,7 +112,7 @@ def allocate_threads(target, bio, email, session_id, csrftoken, thread_count):
         threads[i].join()
 
 
-def logged_in_stage(email, session_id, csrftoken):
+def logged_in_stage(email, session_id, csrftoken) -> None:
     bio = input (f"{Fore.GREEN}Biography: {Fore.WHITE}")
     target = input (f'{Fore.GREEN}Target: {Fore.WHITE}')
     option = input(f"{Fore.GREEN}Threads? [y/n]: {Fore.WHITE}")
@@ -136,7 +136,7 @@ def logged_in_stage(email, session_id, csrftoken):
         logged_in_stage(email, session_id, csrftoken)
 
 
-def sign_in_to_instagram(username, password):
+def sign_in_to_instagram(username: str, password: str):
     url = 'https://instagram.com/accounts/login/ajax/'
     headers = {
         "user-agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36',
@@ -151,7 +151,7 @@ def sign_in_to_instagram(username, password):
     }
     return requests.post(url=url, headers=headers, data=data)
 
-def main():
+def main() -> None:
     username = input(f'{Fore.GREEN}Username: {Fore.WHITE}')
     password = stdiomask.getpass(prompt=f"{Fore.GREEN}Password: {Fore.RED}", mask='*')
     response = sign_in_to_instagram(username=username, password=password)
