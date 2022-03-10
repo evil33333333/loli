@@ -31,7 +31,7 @@ claimed = False
 rate_limited = False
 
 
-def http_request(url: str, headers, data=None) -> Text:
+def http_request(url: str, headers, data=None) -> str:
     curl = pycurl.Curl()
     curl.setopt(pycurl.URL, url)
     curl.setopt(pycurl.HTTPHEADER, headers)
@@ -72,13 +72,6 @@ def make_edit_username_requests(target: str, bio: str, email: str, session_id: s
             time.sleep(5)
             exit()
         elif "spam" in response and not rate_limited:
-        "user-agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36',
-        'x-csrftoken': csrftoken, 
-        'cookie': f'sessionid={session_id}'
-    }
-    return str(requests.get("https://instagram.com/accounts/edit/?__a=1", headers=headers).json()['form_data']['email'])
-
-
             rate_limited = True
             if platform.system() == "Windows":
                 ctypes.windll.user32.MessageBoxW(0, f"Rate limited.", ";3#0001", 0)
@@ -91,8 +84,15 @@ def make_edit_username_requests(target: str, bio: str, email: str, session_id: s
             print(f"{Fore.GREEN}Response: {Fore.WHITE}{response}{Fore.GREEN} || Attempts: {Fore.WHITE}{attempts}{Fore.GREEN}", end='\r')
 
 
-    headers = {
+   
 def get_email_from_account(session_id, csrftoken) -> str:
+    headers = { 
+        "user-agent": 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36',
+        'x-csrftoken': csrftoken, 
+        'cookie': f'sessionid={session_id}'
+    }
+    return str(requests.get("https://instagram.com/accounts/edit/?__a=1", headers=headers).json()['form_data']['email'])
+    
 def generate_random_email_address() -> str:
     random_email = ''
     for _ in range(12): 
